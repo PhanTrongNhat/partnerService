@@ -1,10 +1,11 @@
 const storeModel = require("../models/storesModels");
+const userModel = require("../models/userModel");
 const firebase = require("../../firebase");
 function storeController() {
   const SELF = {};
   return {
     addStore: async (req, res) => {
-      console.log(req.files);
+      // console.log(req.files);
       if (req.body.managerId) {
         if (!req.files || req.files?.length != 3) {
           return res.status(400).send("Error: No files found");
@@ -88,8 +89,16 @@ function storeController() {
     getStore: async (req, res) => {
       try {
         let data;
-        if (req.query._id) {
+        console.log("getStore", req.query?._id);
+        if (req.query?._id) {
           data = await storeModel.findOne({ _id: req.query._id });
+
+          if (data?.managerId) {
+            const result = await userModel.findOne({ _id: data?.managerId });
+            // data = { ...result, ...data };
+            // console.log({...data._doc});
+            //    console.log({...result._doc});
+          }
         } else {
           data = await storeModel.find();
         }

@@ -1,0 +1,25 @@
+version: '3.4'
+services:
+    mongodb_server:
+      container_name: mongodb_server_partner
+      image: mongo
+      volumes:
+          - '/home/sa/data/db:/data/db'
+      ports:
+          - '37018:27017'
+      networks:
+          - htc
+
+    nodejs:
+        build: 
+          context: .
+          dockerfile: ./Dockerfile
+        ports:
+            - "3001:3001"
+        depends_on: 
+            - mongodb_server
+        networks:
+            - htc
+networks:
+  htc:
+    driver: bridge
